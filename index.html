@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guy Berger Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap">
+<style>
+/* VOICE everyday-to-occasion: a student engineer's showreel, confident, not corporate
+   IDEA the "Test Season" title card: near-black screen, Heebo 900, pink-orange-yellow gradient
+   PICTURE his own work playing: the trailer large in the hero, live loops on every project card
+   COLOUR night ground #0c0912, ink #f4f0f7, gradient #ff5fa2 > #ff8a3d > #ffd166, muted #a69cb3
+   TYPE Heebo 900 display + Heebo 400 text (covers Hebrew and Latin)
+   LAYOUT laptop: video left, name and figures right; phone: name, video, figures stacked */
+:root{color-scheme:dark;--bg:#0c0912;--panel:#16111f;--line:#2a2236;--ink:#f4f0f7;--mute:#a69cb3;--p:#ff5fa2;--o:#ff8a3d;--y:#ffd166;--grad:linear-gradient(90deg,#ff5fa2,#ff8a3d 55%,#ffd166)}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.6 Heebo,system-ui,sans-serif;overflow-x:clip}
+a{color:inherit}
+img,video{max-width:100%;display:block}
+.band{padding-block:clamp(36px,5vw,80px);padding-left:max(5vw,16px);padding-right:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1,h2,h3{font-weight:900;line-height:1.05;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h2{font-size:clamp(30px,4.2vw,48px)}
+h3{font-size:22px;letter-spacing:-.01em}
+p{margin:0}
+.lead{color:var(--mute);font-size:18px;max-width:62ch}
+nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;padding:12px max(5vw,16px);flex-wrap:wrap}
+.brand{font-weight:900;font-size:19px;text-decoration:none;margin-inline-end:auto}
+.links{display:flex;gap:18px;flex-wrap:wrap}
+.links a{text-decoration:none;color:var(--mute);font-weight:500}
+.links a:hover,.links a:focus-visible{color:var(--ink)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{font:700 14px Heebo,sans-serif;color:var(--mute);background:none;border:0;border-radius:999px;min-height:36px;min-width:52px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--grad);color:#1a0b14}
+button:focus-visible,a:focus-visible{outline:2px solid var(--y);outline-offset:3px}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(28px,5vw,72px);align-items:center}
+.reel{position:relative;border-radius:22px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line),0 30px 80px -30px rgba(255,95,162,.45);aspect-ratio:4/5}
+.reel video{width:100%;height:100%;object-fit:cover}
+.reel button{position:absolute;inset-block-end:14px;inset-inline-end:14px;font:700 14px Heebo,sans-serif;color:var(--ink);background:rgba(12,9,18,.78);border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:44px;cursor:pointer}
+.name{font-size:clamp(46px,7vw,92px)}
+.role{font-size:clamp(19px,2vw,23px);font-weight:700;margin-top:14px}
+.hero .lead{margin-top:18px}
+.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:30px;border-top:1px solid var(--line)}
+.figs div{padding:16px 0 0;padding-inline-end:12px}
+.figs b{display:block;font-size:clamp(30px,3.6vw,44px);font-weight:900;line-height:1}
+.figs span{color:var(--mute);font-size:14.5px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:999px;font-weight:700;text-decoration:none;border:1px solid var(--line)}
+.btn.main{background:var(--grad);color:#1a0b14;border:0}
+.btn:hover{border-color:var(--p)}
+.head{display:grid;gap:12px;margin-bottom:34px}
+.alt{background:var(--panel);border-block:1px solid var(--line)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.card{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.alt .card{background:#100c17}
+.card video{aspect-ratio:4/5;width:100%;object-fit:cover;background:#000}
+.card .body{display:flex;flex-direction:column;gap:10px;padding:18px;flex:1}
+.card p{color:var(--mute);font-size:15.5px}
+.card .go{margin-top:auto;padding-top:6px;font-weight:700;display:flex;flex-wrap:wrap;gap:6px 16px}
+.go a{text-decoration:none;border-bottom:2px solid var(--o)}
+.go a:hover{border-color:var(--y)}
+.note{color:var(--mute);font-size:14px;margin-top:22px}
+.labs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.lab{border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.lab .tag{font-size:14px;color:var(--y);font-weight:700}
+.lab p{color:var(--mute);font-size:15.5px}
+.lab a{margin-top:auto}
+.ec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center}
+.ec ul{margin:18px 0 0;padding-inline-start:20px;color:var(--mute)}
+.ec li{margin-bottom:8px}
+.ec li b{color:var(--ink)}
+.status{display:inline-block;font-size:14px;font-weight:700;color:#1a0b14;background:var(--y);border-radius:999px;padding:3px 12px;width:max-content}
+.fig{position:relative;min-height:340px;border:1px solid var(--line);border-radius:18px;background:var(--panel)}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.vid{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.vid video{width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;background:#000}
+.vid .body{padding:20px;display:flex;flex-direction:column;gap:10px}
+.vid p{color:var(--mute);font-size:15.5px}
+.vid .stat{margin-top:auto;font-weight:700}
+.vid .stat b{font-size:28px;font-weight:900;display:block;line-height:1.1}
+footer .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end}
+footer h2{font-size:clamp(34px,5vw,60px)}
+.small{color:var(--mute);font-size:14px}
+[dir=rtl] .arrow{display:inline-block;transform:scaleX(-1)}
+@media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.vids{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:820px){.hero{grid-template-columns:minmax(0,1fr)}.hero .txt{order:-1}.reel{max-width:460px;width:100%;margin:0 auto}.labs,.ec{grid-template-columns:minmax(0,1fr)}.links{display:none}}
+@media(max-width:560px){.cards{grid-template-columns:minmax(0,1fr)}.vid{grid-template-columns:minmax(0,1fr)}.figs b{font-size:30px}footer .wrap{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="brand g" href="#top">Guy Berger</a>
+  <div class="links">
+    <a href="#study" data-t="navStudy">Study system</a>
+    <a href="#labs" data-t="navLabs">Labs</a>
+    <a href="#hardware" data-t="navHw">Hardware</a>
+    <a href="#content" data-t="navContent">Content</a>
+    <a href="#contact" data-t="navContact">Contact</a>
+  </div>
+  <div class="lang" role="group" aria-label="Language">
+    <button id="l-en" type="button" aria-pressed="true">EN</button>
+    <button id="l-he" type="button" aria-pressed="false">עב</button>
+  </div>
+</div></nav>
+
+<header class="band" id="top"><div class="wrap hero">
+  <div class="reel">
+    <video id="reel" src="media/test_season.mp4" poster="media/test_season.jpg" autoplay muted loop playsinline></video>
+    <button id="snd" type="button" data-t="sound">Sound on</button>
+  </div>
+  <div class="txt">
+    <h1 class="name"><span class="g">Guy Berger</span></h1>
+    <p class="role" data-t="role">Electrical Engineering &amp; Applied Physics, The Hebrew University of Jerusalem</p>
+    <p class="lead" data-t="lead">I turn hard engineering material into things you can see and play with: animated circuits, interactive labs and step-by-step solutions. I'm also a research assistant in quantum computing (NV centers), and I'm drawn to FPGA design and hardware verification.</p>
+    <div class="figs">
+      <div><b class="g">2×</b><span data-t="f1">Dean's List</span></div>
+      <div><b class="g">300+</b><span data-t="f2">days of reserve duty during the degree</span></div>
+      <div><b class="g">4</b><span data-t="f3">live study tools on this page</span></div>
+    </div>
+    <div class="cta">
+      <a class="btn main" href="#study" data-t="cta1">See the work</a>
+      <a class="btn" href="https://www.linkedin.com/in/guy-berger-2b6832226" target="_blank" rel="noopener">LinkedIn <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</div></header>
+
+<section class="band alt" id="study"><div class="wrap">
+  <div class="head">
+    <h2 data-t="sTitle">A study system built with Claude</h2>
+    <p class="lead" data-t="sLead">Most students use AI to get answers. I use it to build the material I wish every course had, then I learn from it. Each piece below is real and opens live.</p>
+  </div>
+  <div class="cards" id="cards"></div>
+  <p class="note" data-t="heNote">The study material itself is in Hebrew, written for my courses at HUJI.</p>
+</div></section>
+
+<section class="band" id="labs"><div class="wrap">
+  <div class="head">
+    <h2 data-t="lTitle">Interactive labs</h2>
+    <p class="lead" data-t="lLead">Formulas click when you can move them. Each lab is one self-contained page: change a parameter and every plot is recomputed from the signal itself.</p>
+  </div>
+  <div class="labs" id="labList"></div>
+</div></section>
+
+<section class="band alt" id="hardware"><div class="wrap ec">
+  <div>
+    <span class="status" data-t="hwStatus">In development</span>
+    <h2 style="margin-top:14px">Edgecase Detector</h2>
+    <p class="lead" style="margin-top:14px" data-t="hwLead">A tool for FPGA verification: pick the kind of hardware block you're building, and it surfaces the edge cases its testbench should cover.</p>
+    <ul>
+      <li data-t="hw1"><b>The core:</b> a database that maps block types (FIFOs, arbiters, FSMs, interfaces) to the edge cases that break them.</li>
+      <li data-t="hw2"><b>Data:</b> mined from open RTL repositories with their testbenches, and from published silicon errata.</li>
+      <li data-t="hw3"><b>Measured by mutation testing:</b> inject bugs into the RTL and count how many the suggested tests catch.</li>
+      <li data-t="hw4"><b>Why FPGA:</b> most verification tooling is built for ASIC teams; FPGA teams are underserved.</li>
+    </ul>
+  </div>
+  <div class="fig" aria-label="Diagram: block type to edge-case database to testbench, scored by mutation testing"><svg id="ecfig"></svg></div>
+</div></section>
+
+<section class="band" id="content"><div class="wrap">
+  <div class="head">
+    <h2 data-t="cTitle">Teaching it on LinkedIn</h2>
+    <p class="lead" data-t="cLead">I share the method so other students can use it. Both videos are cut from my own animations and screen recordings.</p>
+  </div>
+  <div class="vids">
+    <div class="vid">
+      <video src="media/video2.mp4" poster="media/video2.jpg" controls preload="none" playsinline></video>
+      <div class="body">
+        <h3 data-t="v2t">Can a Claude subscription replace private tutoring?</h3>
+        <p data-t="v2d">How I build an interactive learning companion for every course: topic priorities, Hebrew explanations, past-exam questions solved step by step, with animations and labs beside it. In Hebrew, with subtitles.</p>
+        <p class="stat"><b class="g">2,700+</b><span data-t="v2s">impressions on LinkedIn</span></p>
+      </div>
+    </div>
+    <div class="vid">
+      <video src="media/test_season.mp4" poster="media/test_season.jpg" controls preload="none" playsinline></video>
+      <div class="body">
+        <h3>Test Season</h3>
+        <p data-t="tsd">A 58-second trailer with no talking: five study hacks cut to a 100 BPM grid, from circuit animations to exam review, labs, step-by-step solutions and full study guides.</p>
+        <p class="stat"><b class="g">5</b><span data-t="tss">study hacks in one minute</span></p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer class="band alt" id="contact"><div class="wrap">
+  <div>
+    <h2 data-t="ctTitle">Let's talk <span class="g">hardware</span>.</h2>
+    <p class="lead" style="margin-top:14px" data-t="ctLead">Open to student positions and internships in hardware, FPGA and verification. The fastest way to reach me is LinkedIn.</p>
+  </div>
+  <a class="btn main" href="https://www.linkedin.com/in/guy-berger-2b6832226" target="_blank" rel="noopener" data-t="ctBtn">Message me on LinkedIn</a>
+  <p class="small" style="grid-column:1/-1" data-t="foot">© 2026 Guy Berger · Built with Claude</p>
+</div></footer>
+
+<script>
+{
+/* To add a project: copy one object in CARDS or LABS, change the text in both languages, and point video / href at the new file. */
+const CARDS=[
+ {video:"media/loop_anim.mp4",poster:"media/loop_anim.jpg",
+  en:{t:"Animated circuit videos",d:"3Blue1Brown-style animations that build a circuit step by step: Miller effect, current mirrors, differential pairs, CMOS sizing.",l:[["Watch in the trailer","#top"]]},
+  he:{t:"סרטוני אנימציה של מעגלים",d:"אנימציות בסגנון 3Blue1Brown שבונות מעגל שלב אחר שלב: אפקט מילר, מראת זרם, זוג דיפרנציאלי, רוחבים ב-CMOS.",l:[["לצפייה בטריילר","#top"]]}},
+ {video:"media/loop_steps.mp4",poster:"media/loop_steps.jpg",
+  en:{t:"Step-by-step solutions",d:"Real past-exam questions, solved part by part. The exam wording stays visible and each part's solution opens on click, so you try first.",l:[["Open a solved exam question","demos/solid-state-guide.html#t4"]]},
+  he:{t:"פתרון צעד אחר צעד",d:"שאלות אמיתיות ממבחני עבר, פתורות סעיף אחר סעיף. לשון המבחן גלויה, והפתרון של כל סעיף נפתח בלחיצה, כדי לנסות קודם לבד.",l:[["לשאלת מבחן פתורה","demos/solid-state-guide.html#t4"]]}},
+ {video:"media/loop_guide.mp4",poster:"media/loop_guide.jpg",
+  en:{t:"A study guide for every course",d:"A tab for every topic: intuition, solved past-exam questions, hover definitions for every symbol, and an interactive lab. Shown here: Solid State Physics.",l:[["Open live","demos/solid-state-guide.html"]]},
+  he:{t:"מדריך לימוד לכל קורס",d:"לשונית לכל נושא: אינטואיציה, שאלות מבחן פתורות, הסבר בריחוף על כל משתנה, ומעבדה אינטראקטיבית. כאן: פיזיקה של מצב מוצק.",l:[["לפתיחה","demos/solid-state-guide.html"]]}},
+ {video:"media/loop_labs.mp4",poster:"media/loop_labs.jpg",
+  en:{t:"Interactive labs",d:"Move a slider and watch a signal pass through every filter, alias, or map to a new plane.",l:[["See all labs","#labs"]]},
+  he:{t:"מעבדות אינטראקטיביות",d:"מזיזים מחוון ורואים את האות עובר בכל פילטר, מתקפל, או נשלח למישור חדש.",l:[["לכל המעבדות","#labs"]]}}
+];
+const LABS=[
+ {href:"demos/multirate-lab.html",en:{tag:"Signal processing",t:"Multirate filter chain",d:"Upsample, filter, decimate: see the spectrum after every block in the chain, and test which designs survive any input."},he:{tag:"עיבוד אותות",t:"שרשרת מסננים רב-קצבית",d:"ריבוי, סינון ודצימציה: רואים את הספקטרום אחרי כל בלוק בשרשרת, ובודקים איזה תכנון עובד לכל קלט."}},
+ {href:"demos/sampling-lab.html",en:{tag:"Signal processing",t:"Sampling & aliasing",d:"Change the sampling rate and watch time, spectrum and reconstruction update together, until the signal folds."},he:{tag:"עיבוד אותות",t:"דגימה וקיפול",d:"משנים את קצב הדגימה ורואים את הזמן, הספקטרום והשחזור מתעדכנים יחד, עד שהאות מתקפל."}},
+ {href:"demos/complex-lab.html",en:{tag:"Complex functions",t:"Conformal mapping",d:"Drag a point in the z-plane and see where it lands, its derivative, and whether the map is conformal there."},he:{tag:"פונקציות מרוכבות",t:"העתקות קונפורמיות",d:"גוררים נקודה במישור z ורואים לאן היא נוחתת, את הנגזרת, והאם ההעתקה קונפורמית שם."}}
+];
+const T={he:{navStudy:"שיטת הלמידה",navLabs:"מעבדות",navHw:"חומרה",navContent:"תוכן",navContact:"יצירת קשר",sound:"הפעל קול",soundOff:"השתק",
+ role:"הנדסת חשמל ופיזיקה יישומית, האוניברסיטה העברית בירושלים",
+ lead:"אני הופך חומר הנדסי קשה לדברים שאפשר לראות ולשחק איתם: מעגלים מונפשים, מעבדות אינטראקטיביות ופתרונות צעד אחר צעד. אני גם עוזר מחקר במחשוב קוונטי (מרכזי NV), ומתעניין בתכנון FPGA ובווריפיקציה של חומרה.",
+ f1:"מצטיין דיקן",f2:"ימי מילואים במהלך התואר",f3:"כלי למידה חיים בעמוד הזה",cta1:"לעבודות",
+ sTitle:"שיטת למידה שבניתי עם Claude",sLead:"רוב הסטודנטים משתמשים ב-AI כדי לקבל תשובות. אני משתמש בו כדי לבנות את החומר שהייתי רוצה שיהיה בכל קורס, ואז לומד ממנו. כל אחד מהדברים כאן אמיתי ונפתח בלייב.",
+ heNote:"חומרי הלימוד עצמם בעברית, ונכתבו לקורסים שלי באוניברסיטה העברית.",
+ lTitle:"מעבדות אינטראקטיביות",lLead:"נוסחה מתיישבת כשאפשר להזיז אותה. כל מעבדה היא עמוד אחד עצמאי: משנים פרמטר וכל הגרפים מחושבים מחדש מהאות עצמו.",
+ hwStatus:"בפיתוח",hwLead:"כלי לווריפיקציה של FPGA: בוחרים את סוג בלוק החומרה שבונים, והוא מציף את מקרי הקצה שה-testbench צריך לכסות.",
+ hw1:"<b>הליבה:</b> מסד נתונים שממפה סוגי בלוקים (FIFO, ארביטרים, מכונות מצבים, ממשקים) למקרי הקצה ששוברים אותם.",
+ hw2:"<b>הנתונים:</b> נכרים ממאגרי RTL פתוחים יחד עם ה-testbench שלהם, ומרשימות errata של סיליקון שפורסמו.",
+ hw3:"<b>מדידה ב-mutation testing:</b> מזריקים באגים ל-RTL וסופרים כמה מהם הבדיקות המוצעות תופסות.",
+ hw4:"<b>למה FPGA:</b> רוב כלי הווריפיקציה נבנו לצוותי ASIC, וצוותי FPGA לא מקבלים מענה.",
+ cTitle:"מלמד את זה בלינקדאין",cLead:"אני משתף את השיטה כדי שסטודנטים אחרים יוכלו להשתמש בה. שני הסרטונים בנויים מהאנימציות והקלטות המסך שלי.",
+ v2t:"מנוי ל-Claude מחליף שיעורים פרטיים?",v2d:"איך אני בונה מלווה למידה אינטראקטיבי לכל קורס: טבלת חשיבות לפי נושאים, הסבר בעברית, שאלות ממבחני עבר בפתרון שלב אחר שלב, ולצדו אנימציות ומעבדות. בעברית, עם כתוביות.",v2s:"חשיפות בלינקדאין",
+ tsd:"טריילר של 58 שניות בלי דיבור: חמישה טריקים ללמידה על גריד של 100 BPM, מאנימציות של מעגלים ועד שיפור מבחנים, מעבדות, פתרון צעד אחר צעד ומדריכי לימוד מלאים.",tss:"טריקים ללמידה בדקה אחת",
+ ctTitle:"בואו נדבר <span class=\"g\">חומרה</span>.",ctLead:"פתוח למשרות סטודנט ולהתמחויות בחומרה, FPGA ווריפיקציה. הדרך הכי מהירה להגיע אליי היא לינקדאין.",ctBtn:"לשליחת הודעה בלינקדאין",foot:"© 2026 גיא ברגר · נבנה עם Claude"}};
+const EN={};document.querySelectorAll('[data-t]').forEach(e=>EN[e.dataset.t]=e.innerHTML);EN.soundOff="Sound off";
+const ext=h=>h.startsWith('#')?'':' target="_blank" rel="noopener"';
+const arrow=h=>h.startsWith('#')?'':' <span class="arrow">↗</span>';
+let lang='en';
+const render=()=>{
+ document.getElementById('cards').innerHTML=CARDS.map(c=>{const x=c[lang];return `<article class="card"><video src="${c.video}" poster="${c.poster}" autoplay muted loop playsinline></video><div class="body"><h3>${x.t}</h3><p>${x.d}</p><p class="go">${x.l.map(([t,h])=>`<a href="${h}"${ext(h)}>${t}${arrow(h)}</a>`).join('')}</p></div></article>`}).join('');
+ document.getElementById('labList').innerHTML=LABS.map(l=>{const x=l[lang];return `<article class="lab"><span class="tag">${x.tag}</span><h3>${x.t}</h3><p>${x.d}</p><p class="go"><a href="${l.href}" target="_blank" rel="noopener">${lang==='he'?'לפתיחת המעבדה':'Open the lab'} <span class="arrow">↗</span></a></p></article>`}).join('');
+};
+const reel=document.getElementById('reel'),snd=document.getElementById('snd');
+const setLang=l=>{
+ lang=l;const d=document.documentElement;d.lang=l;d.dir=l==='he'?'rtl':'ltr';
+ document.querySelectorAll('[data-t]').forEach(e=>{const k=e.dataset.t;e.innerHTML=(l==='he'?T.he[k]:EN[k])??EN[k]});
+ snd.textContent=reel.muted?(l==='he'?T.he.sound:EN.sound):(l==='he'?T.he.soundOff:EN.soundOff);
+ document.getElementById('l-en').setAttribute('aria-pressed',l==='en');document.getElementById('l-he').setAttribute('aria-pressed',l==='he');
+ document.title=l==='he'?'גיא ברגר · פורטפוליו':'Guy Berger Portfolio';
+ render();drawEc();
+ try{localStorage.setItem('pf-lang',l)}catch(e){}
+};
+document.getElementById('l-en').addEventListener('click',()=>setLang('en'));
+document.getElementById('l-he').addEventListener('click',()=>setLang('he'));
+snd.addEventListener('click',()=>{reel.muted=!reel.muted;if(!reel.muted){reel.currentTime=0;reel.play().catch(()=>{})}setLang(lang)});
+const s=document.getElementById('ecfig');
+const drawEc=()=>{
+ const W=s.clientWidth,H=s.clientHeight;if(!W)return;const he=lang==='he';
+ const nodes=he?[["סוג בלוק","FIFO · ארביטר · FSM"],["מסד מקרי קצה","הליבה של הכלי"],["Testbench","בדיקות מוצעות"]]:[["Block type","FIFO · arbiter · FSM"],["Edge-case DB","the core"],["Testbench","suggested tests"]];
+ const narrow=W<460,bw=narrow?W*0.7:Math.min(170,W*0.27),bh=70,pad=20;
+ let pos;
+ if(narrow){const gap=(H-60-3*bh)/3;pos=nodes.map((_,i)=>[(W-bw)/2,pad+i*(bh+gap)])}
+ else{const gap=(W-2*pad-3*bw)/2;pos=nodes.map((_,i)=>[pad+i*(bw+gap),H*0.36-bh/2])}
+ if(he&&!narrow)pos=pos.map(([x,y])=>[W-x-bw,y]);
+ const cols=['#ff5fa2','#ff8a3d','#ffd166'];
+ let o='<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a69cb3"/></marker></defs>';
+ for(let i=0;i<2;i++){const[a,b]=[pos[i],pos[i+1]];
+  if(narrow)o+=`<line x1="${W/2}" y1="${a[1]+bh}" x2="${W/2}" y2="${b[1]-4}" stroke="#a69cb3" stroke-width="2" marker-end="url(#ah)"/>`;
+  else{const x1=he?a[0]:a[0]+bw,x2=he?b[0]+bw+4:b[0]-4;o+=`<line x1="${x1}" y1="${a[1]+bh/2}" x2="${x2}" y2="${b[1]+bh/2}" stroke="#a69cb3" stroke-width="2" marker-end="url(#ah)"/>`}}
+ nodes.forEach(([t,sub],i)=>{const[x,y]=pos[i];o+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="14" fill="#100c17" stroke="${cols[i]}" stroke-width="2"/><text x="${x+bw/2}" y="${y+30}" text-anchor="middle" fill="#f4f0f7" font-weight="900" font-size="17" font-family="Heebo">${t}</text><text x="${x+bw/2}" y="${y+52}" text-anchor="middle" fill="#a69cb3" font-size="14" font-family="Heebo">${sub}</text>`});
+ const ly=narrow?H-28:H*0.78,mt=he?'מדידה: mutation testing, כמה באגים מוזרקים נתפסים':'Scored by mutation testing: how many injected bugs get caught';
+ const bugs=narrow?0:9;
+ if(!narrow){const x0=pos[2][0]+bw/2;o+=`<path d="M${x0} ${pos[2][1]+bh} V${ly-22}" stroke="#ffd166" stroke-width="2" stroke-dasharray="4 5" fill="none"/>`;
+  for(let i=0;i<bugs;i++){const bx=W/2+(i-4)*Math.min(30,W/14);o+=`<circle cx="${bx}" cy="${ly-8}" r="8" fill="none" stroke="#ffd166" stroke-width="2"/>`}}
+ if(narrow){const[m1,m2]=he?['מדידה: mutation testing','כמה באגים מוזרקים נתפסים']:['Scored by mutation testing:','how many injected bugs get caught'];o+=`<text x="${W/2}" y="${ly-10}" text-anchor="middle" fill="#a69cb3" font-size="14" font-family="Heebo"><tspan x="${W/2}">${m1}</tspan><tspan x="${W/2}" dy="18">${m2}</tspan></text>`}
+ else o+=`<text x="${W/2}" y="${ly+24}" text-anchor="middle" fill="#a69cb3" font-size="14" font-family="Heebo">${mt}</text>`;
+ s.innerHTML=o;
+};
+const ro=new ResizeObserver(drawEc);ro.observe(s);
+let saved='en';try{saved=localStorage.getItem('pf-lang')||'en'}catch(e){}
+setLang(saved==='he'?'he':'en');
+}
+</script>
+</body>
+</html>

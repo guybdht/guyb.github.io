@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<title>מעבדת מרוכבות 80314</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EDF0EA; --panel:#F8FAF6; --ink:#1B2A3A; --muted:#5B6A73; --line:#CCD5CB; --grid:#DCE3DA; --axis:#9AA7A0;
+  --dom:#2E6E8E; --domfill:rgba(46,110,142,.16); --img:#B5542A; --imgfill:rgba(181,84,42,.16);
+  --gold:#B8860B; --pole:#B0302A; --ok:#2F7A4A; --warn:#B0302A;
+  --c1:#2E6E8E; --c2:#B5542A; --c3:#2F7A4A; --c4:#7A4B9A; --c5:#B8860B;
+  --chip:#E3E9E1; --focus:#2E6E8E;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11171D; --panel:#18212A; --ink:#DCE5EC; --muted:#93A2AD; --line:#2A3743; --grid:#1F2A34; --axis:#4C5D6A;
+  --dom:#6FB3D6; --domfill:rgba(111,179,214,.20); --img:#E88A5E; --imgfill:rgba(232,138,94,.20);
+  --gold:#E0B04A; --pole:#FF7468; --ok:#6CC08A; --warn:#FF7468;
+  --c1:#6FB3D6; --c2:#E88A5E; --c3:#6CC08A; --c4:#B996DA; --c5:#E0B04A; --chip:#223040; --focus:#6FB3D6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11171D; --panel:#18212A; --ink:#DCE5EC; --muted:#93A2AD; --line:#2A3743; --grid:#1F2A34; --axis:#4C5D6A;
+  --dom:#6FB3D6; --domfill:rgba(111,179,214,.20); --img:#E88A5E; --imgfill:rgba(232,138,94,.20);
+  --gold:#E0B04A; --pole:#FF7468; --ok:#6CC08A; --warn:#FF7468;
+  --c1:#6FB3D6; --c2:#E88A5E; --c3:#6CC08A; --c4:#B996DA; --c5:#E0B04A; --chip:#223040; --focus:#6FB3D6; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:Rubik,"Segoe UI",Arial,sans-serif;font-size:15px;line-height:1.55;padding-inline:16px;padding-block:14px 40px;margin:0}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px}
+h1{font-size:1.45rem;margin:0;font-weight:700;text-wrap:balance}
+h1 small{font-weight:400;color:var(--muted);font-size:.9rem;margin-inline-start:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.guess{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted)}
+.mod{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+@media (max-width:860px){.mod{grid-template-columns:1fr}}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:10px}
+.side label{font-size:.82rem;color:var(--muted);letter-spacing:.02em;display:block;margin-bottom:3px}
+select,input[type=range]{width:100%}
+select{font:inherit;padding:5px 6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chk{display:flex;gap:6px;align-items:center;font-size:.9rem}
+.btn{font:inherit;font-size:.88rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:4px 10px;border-radius:6px;cursor:pointer}
+.btn.primary{background:var(--img);border-color:var(--img);color:#fff}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.stage{grid-template-columns:1fr}}
+.plane{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.plane h3{margin:0;font-size:.85rem;font-weight:500;padding:6px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.plane h3 .z{font-family:"IBM Plex Mono",monospace;color:var(--muted);direction:ltr;unicode-bidi:isolate}
+canvas{display:block;width:100%;aspect-ratio:1/1;touch-action:none}
+.cover{position:absolute;inset:34px 0 0 0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:var(--panel);text-align:center;padding:16px;color:var(--muted)}
+.info{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;gap:6px}
+.ltr{direction:ltr;unicode-bidi:isolate;font-family:"IBM Plex Mono",monospace;font-size:.9em}
+.task{font-size:.93rem}
+.task b{color:var(--img)}
+table.vals{border-collapse:collapse;width:100%;font-size:.9rem}
+table.vals td{padding:3px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.vals td.v{font-family:"IBM Plex Mono",monospace;direction:ltr;text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-size:.75rem;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted)}
+.good{color:var(--ok)} .bad{color:var(--warn)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.84rem}
+.legend span::before{content:"";display:inline-block;width:12px;height:3px;border-radius:2px;background:currentColor;margin-inline-end:5px;vertical-align:middle}
+.spark{width:100%;height:90px;aspect-ratio:auto}
+.hint{font-size:.85rem;color:var(--muted)}
+.hidden-val .v{filter:blur(6px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" dir="rtl" lang="he">
+<header>
+  <h1>מעבדת מרוכבות <small>80314 · לשחק עם העתקות, מסילות וטבעות לורן</small></h1>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-map" aria-selected="true">העתקות תחומים</button>
+    <button class="tab" role="tab" id="tab-int" aria-selected="false">מסילות אינטגרציה</button>
+    <button class="tab" role="tab" id="tab-lau" aria-selected="false">טבעות לורן</button>
+  </div>
+  <label class="guess"><input type="checkbox" id="guessMode"> מצב "נחש קודם" — מסתיר תמונות ותוצאות עד שלוחצים "הצג"</label>
+</header>
+
+<!-- ========== MODULE 1: MAPPINGS ========== -->
+<section class="mod" id="m-map">
+  <div class="side">
+    <div><label for="mapPreset">שאלה מהמבחנים</label><select id="mapPreset"></select></div>
+    <div><label for="mapFn">העתקה</label><select id="mapFn"></select></div>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="mapGrid" checked> קווי רשת</label>
+      <label class="chk"><input type="checkbox" id="mapFill" checked> מילוי פנים</label>
+    </div>
+    <div class="row"><button class="btn" id="mapZoomIn">הגדל תמונה</button><button class="btn" id="mapZoomOut">הקטן</button><button class="btn" id="mapFit">התאם</button></div>
+    <div class="task" id="mapTask"></div>
+    <div class="hint">גרור את הנקודה הצהובה במישור z. בצד ימין תראה לאן היא נוחתת, את הנגזרת, והאם ההעתקה קונפורמית שם.</div>
+  </div>
+  <div style="display:grid;gap:12px">
+    <div class="stage">
+      <div class="plane"><h3><span>מישור z — התחום D</span><span class="z" id="zBox"></span></h3><canvas id="cz"></canvas></div>
+      <div class="plane"><h3><span>מישור w — התמונה</span><span class="z" id="wBox"></span></h3><canvas id="cw"></canvas>
+        <div class="cover" id="mapCover" hidden><div>שרטט על דף את תמונת השפה: לאן כל צבע הולך, ואיפה הפנים.</div><button class="btn primary" id="mapReveal">הצג תמונה</button></div></div>
+    </div>
+    <div class="info">
+      <div class="legend" id="mapLegend"></div>
+      <table class="vals" id="mapVals"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODULE 2: CONTOURS ========== -->
+<section class="mod" id="m-int" hidden>
+  <div class="side">
+    <div><label for="intPreset">תבנית</label><select id="intPreset"></select></div>
+    <div id="intSliders" style="display:grid;gap:8px"></div>
+    <div class="task" id="intTask"></div>
+  </div>
+  <div style="display:grid;gap:12px">
+    <div class="stage">
+      <div class="plane"><h3><span>המסילה והקטבים</span><span class="z" id="intFn"></span></h3><canvas id="ci"></canvas></div>
+      <div class="plane"><h3><span id="sparkTitle">|∫ על הקשת| כפונקציה של R</span></h3><canvas id="cs" style="aspect-ratio:1/1"></canvas></div>
+    </div>
+    <div class="info" id="intInfo">
+      <div class="row" style="justify-content:space-between"><div class="legend" id="intLegend"></div><button class="btn primary" id="intReveal" hidden>הצג ערכים</button></div>
+      <table class="vals" id="intVals"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MODULE 3: LAURENT ========== -->
+<section class="mod" id="m-lau" hidden>
+  <div class="side">
+    <div><label for="lauPreset">פונקציה</label><select id="lauPreset"></select></div>
+    <div><label for="lauRho">רדיוס המסילה ρ: <span class="ltr" id="lauRhoV"></span></label><input type="range" id="lauRho" min="0" max="1000" value="300"></div>
+    <div class="row"><button class="btn" id="lauCenter0">מרכז ב־0</button><button class="btn" id="lauCenterDef">מרכז ברירת מחדל</button></div>
+    <div class="task" id="lauTask"></div>
+    <div class="hint">גרור את מרכז הפיתוח z₀ (הנקודה הצהובה). הטבעות נקבעות לפי המרחקים מ־z₀ לסינגולריות. הזז את ρ בין טבעות וראה איך המקדמים קופצים.</div>
+  </div>
+  <div style="display:grid;gap:12px">
+    <div class="plane"><h3><span>טבעות ההתכנסות סביב z₀</span><span class="z" id="lauFn"></span></h3><canvas id="cl" style="aspect-ratio:16/10"></canvas></div>
+    <div class="info">
+      <div class="row" style="justify-content:space-between"><div id="lauRing" class="task"></div><button class="btn primary" id="lauReveal" hidden>הצג ערכים</button></div>
+      <table class="vals" id="lauVals"></table>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+"use strict";
+/* ---------- complex arithmetic (arrays [re, im]) ---------- */
+const C=(x,y=0)=>[x,y];
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1]], sub=(a,b)=>[a[0]-b[0],a[1]-b[1]];
+const mul=(a,b)=>[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+const div=(a,b)=>{const d=b[0]*b[0]+b[1]*b[1];return [(a[0]*b[0]+a[1]*b[1])/d,(a[1]*b[0]-a[0]*b[1])/d]};
+const sc=(a,s)=>[a[0]*s,a[1]*s];
+const abs=a=>Math.hypot(a[0],a[1]), arg=a=>Math.atan2(a[1],a[0]);
+const conj=a=>[a[0],-a[1]];
+const cexp=a=>{const e=Math.exp(a[0]);return [e*Math.cos(a[1]),e*Math.sin(a[1])]};
+const clog=a=>[Math.log(abs(a)),arg(a)];
+const csqrt=a=>{const r=Math.sqrt(abs(a)),t=arg(a)/2;return [r*Math.cos(t),r*Math.sin(t)]};
+const cpow=(a,n)=>{let r=C(1);for(let i=0;i<Math.abs(n);i++)r=mul(r,a);return n<0?div(C(1),r):r};
+const cis=t=>[Math.cos(t),Math.sin(t)];
+const csin=a=>[Math.sin(a[0])*Math.cosh(a[1]),Math.cos(a[0])*Math.sinh(a[1])];
+const ccos=a=>[Math.cos(a[0])*Math.cosh(a[1]),-Math.sin(a[0])*Math.sinh(a[1])];
+const I=C(0,1), ONE=C(1), fin=a=>isFinite(a[0])&&isFinite(a[1]);
+const fmt=(x,d=4)=>{if(!isFinite(x))return "∞";const v=Math.abs(x)<5e-10?0:x;return v.toFixed(d).replace(/\.?0+$/,"")||"0"};
+const fc=(a,d=4)=>{if(!fin(a))return "∞";const re=Math.abs(a[0])<5e-9?0:a[0],im=Math.abs(a[1])<5e-9?0:a[1];
+  if(im===0)return fmt(re,d); if(re===0)return fmt(im,d)+"i"; return fmt(re,d)+(im<0?" − ":" + ")+fmt(Math.abs(im),d)+"i"};
+
+/* ---------- theme tokens for canvas ---------- */
+let T={}; function readTokens(){const s=getComputedStyle(document.documentElement);["bg","panel","ink","muted","line","grid","axis","dom","domfill","img","imgfill","gold","pole","ok","c1","c2","c3","c4","c5"].forEach(k=>T[k]=s.getPropertyValue("--"+k).trim())}
+readTokens();
+const pieceColor=i=>[T.c1,T.c2,T.c3,T.c4,T.c5][i%5];
+
+/* ---------- plane helper ---------- */
+class Plane{
+  constructor(cv){this.cv=cv;this.ctx=cv.getContext("2d");this.set(-2,2,-2,2);}
+  set(x0,x1,y0,y1){const cx=(x0+x1)/2,cy=(y0+y1)/2,h=Math.max(x1-x0,(y1-y0)*this.aspect())/2;this.cx=cx;this.cy=cy;this.hw=h;}
+  aspect(){const r=this.cv.getBoundingClientRect();return r.width&&r.height?r.width/r.height:1}
+  size(){const r=this.cv.getBoundingClientRect(),d=window.devicePixelRatio||1;const W=Math.max(10,Math.round(r.width*d)),H=Math.max(10,Math.round(r.height*d));if(this.cv.width!==W||this.cv.height!==H){this.cv.width=W;this.cv.height=H;}this.W=W;this.H=H;this.d=d;this.sc=W/(2*this.hw);}
+  X(z){return this.W/2+(z[0]-this.cx)*this.sc} Y(z){return this.H/2-(z[1]-this.cy)*this.sc}
+  from(px,py){return [this.cx+(px-this.W/2)/this.sc,this.cy-(py-this.H/2)/this.sc]}
+  clear(){this.size();const g=this.ctx;g.setTransform(1,0,0,1,0,0);g.fillStyle=T.panel;g.fillRect(0,0,this.W,this.H);this.axes();}
+  axes(){const g=this.ctx,sc=this.sc;const raw=80*this.d/sc;const p=Math.pow(10,Math.floor(Math.log10(raw)));const step=[1,2,5,10].map(m=>m*p).find(s=>s>=raw);
+    const x0=this.cx-this.W/2/sc,x1=this.cx+this.W/2/sc,y0=this.cy-this.H/2/sc,y1=this.cy+this.H/2/sc;
+    g.lineWidth=1*this.d;g.strokeStyle=T.grid;g.beginPath();
+    for(let x=Math.ceil(x0/step)*step;x<=x1;x+=step){g.moveTo(this.X([x,0]),0);g.lineTo(this.X([x,0]),this.H)}
+    for(let y=Math.ceil(y0/step)*step;y<=y1;y+=step){g.moveTo(0,this.Y([0,y]));g.lineTo(this.W,this.Y([0,y]))}
+    g.stroke();g.strokeStyle=T.axis;g.beginPath();g.moveTo(0,this.Y([0,0]));g.lineTo(this.W,this.Y([0,0]));g.moveTo(this.X([0,0]),0);g.lineTo(this.X([0,0]),this.H);g.stroke();
+    g.fillStyle=T.muted;g.font=`${11*this.d}px "IBM Plex Mono",monospace`;g.textAlign="center";g.textBaseline="top";
+    const ya=Math.min(Math.max(this.Y([0,0])+3*this.d,2),this.H-14*this.d);
+    for(let x=Math.ceil(x0/step)*step;x<=x1;x+=step){if(Math.abs(x)<step/2)continue;g.fillText(+x.toPrecision(6)+"",this.X([x,0]),ya)}
+    g.textAlign="left";g.textBaseline="middle";const xa=Math.min(Math.max(this.X([0,0])+4*this.d,2),this.W-40*this.d);
+    for(let y=Math.ceil(y0/step)*step;y<=y1;y+=step){if(Math.abs(y)<step/2)continue;g.fillText(+y.toPrecision(6)+"i",xa,this.Y([0,y]))}}
+  path(pts,color,w=2.2,dash){const g=this.ctx;g.strokeStyle=color;g.lineWidth=w*this.d;g.setLineDash(dash?dash.map(v=>v*this.d):[]);g.lineJoin="round";g.beginPath();let pen=false,prev=null;
+    for(const z of pts){if(!fin(z)||Math.abs(this.X(z))>1e5||Math.abs(this.Y(z))>1e5){pen=false;prev=null;continue}
+      const x=this.X(z),y=this.Y(z);if(pen&&prev&&Math.hypot(x-prev[0],y-prev[1])>this.W*0.6){pen=false}
+      if(!pen){g.moveTo(x,y);pen=true}else g.lineTo(x,y);prev=[x,y]}
+    g.stroke();g.setLineDash([]);}
+  arrow(pts,color){const n=pts.length;if(n<4)return;let i=Math.floor(n*0.55);let a=pts[i],b=pts[Math.min(n-1,i+2)];if(!fin(a)||!fin(b))return;
+    const x=this.X(a),y=this.Y(a),ang=Math.atan2(this.Y(b)-y,this.X(b)-x);if(!isFinite(ang)||Math.abs(x)>1e5)return;const g=this.ctx,s=7*this.d;
+    g.fillStyle=color;g.beginPath();g.moveTo(x+s*Math.cos(ang),y+s*Math.sin(ang));g.lineTo(x+s*Math.cos(ang+2.5),y+s*Math.sin(ang+2.5));g.lineTo(x+s*Math.cos(ang-2.5),y+s*Math.sin(ang-2.5));g.fill();}
+  dot(z,color,r=4,label){const g=this.ctx;if(!fin(z))return;g.fillStyle=color;g.beginPath();g.arc(this.X(z),this.Y(z),r*this.d,0,7);g.fill();
+    if(label){g.font=`${12*this.d}px Rubik,sans-serif`;g.fillStyle=T.ink;g.textAlign="left";g.textBaseline="bottom";g.fillText(label,this.X(z)+6*this.d,this.Y(z)-4*this.d)}}
+  cross(z,color,label){const g=this.ctx;if(!fin(z))return;const x=this.X(z),y=this.Y(z),s=5*this.d;g.strokeStyle=color;g.lineWidth=2.2*this.d;g.beginPath();g.moveTo(x-s,y-s);g.lineTo(x+s,y+s);g.moveTo(x-s,y+s);g.lineTo(x+s,y-s);g.stroke();
+    if(label){g.font=`${12*this.d}px "IBM Plex Mono",monospace`;g.fillStyle=color;g.textAlign="left";g.textBaseline="bottom";g.fillText(label,x+7*this.d,y-5*this.d)}}
+  circle(c,r,color,w=1.4,dash){const pts=[];for(let k=0;k<=240;k++)pts.push(add(c,sc(cis(2*Math.PI*k/240),r)));this.path(pts,color,w,dash)}
+}
+const lin=(a,b)=>t=>add(a,sc(sub(b,a),t));
+const arcP=(c,r,t0,t1)=>t=>add(c,sc(cis(t0+(t1-t0)*t),r));
+const ray=(a,dir,L=60)=>t=>add(a,sc(dir,L*t*t)); // denser near the vertex
+const PI=Math.PI;
+
+/* ======================== MODULE 1 ======================== */
+const L=60;
+const MAPS={
+  z2:{n:"z²",f:z=>mul(z,z)}, z3:{n:"z³",f:z=>cpow(z,3)}, inv:{n:"1/z",f:z=>div(ONE,z)}, inv2:{n:"1/z²",f:z=>div(ONE,mul(z,z))},
+  exp:{n:"eᶻ",f:cexp}, sin:{n:"sin z",f:csin}, log:{n:"Log z",f:clog},
+  mobUHP:{n:"(z−i)/(z+i)",f:z=>div(sub(z,I),add(z,I))},
+};
+const P=[
+ {id:"26B2a",n:"2026 ב' ש'2 (א) — רבע עיגול ← רביע",inside:z=>z[0]>0&&z[1]>0&&abs(z)<1,box:[-0.3,1.2,-0.3,1.2],
+  pieces:[["[0,1] ממשי",lin(C(0),C(1))],["קשת |z|=1",arcP(C(0),1,0,PI/2)],["[0,i] מדומה",lin(C(0,1),C(0))]],
+  maps:[["z²",MAPS.z2.f],["(1+z²)/(1−z²)",z=>{const s=mul(z,z);return div(add(ONE,s),sub(ONE,s))}]],probe:[0.5,0.4],
+  task:"לפני שמציגים: לאן הולכת הקשת |z|=1 תחת (1+z²)/(1−z²)? רמז: חצי זווית."},
+ {id:"26B2b",n:"2026 ב' ש'2 (ב) — אוטומורפיזם לא ליניארי של רביע",inside:z=>z[0]>0&&z[1]>0,box:[-0.3,3,-0.3,3],
+  pieces:[["קרן ממשית",ray(C(0),C(1),L)],["קרן מדומה",ray(C(0),C(0,1),L)]],maps:[["i/z",z=>div(I,z)]],probe:[1.2,0.5],
+  task:"i/z שולחת את הרביע לעצמו — אבל מחליפה בין שתי הקרניים. בדוק: θ ↦ π/2 − θ."},
+ {id:"26A2",n:"2026 א' ש'2 — z² לא חח\"ע, ו־1/(z+4)",inside:z=>abs(z)<=4&&z[0]>=-1&&z[0]<=2,box:[-5,5,-5,5],
+  pieces:[["x=2",lin(C(2,-Math.sqrt(12)),C(2,Math.sqrt(12)))],["קשת עליונה",t=>{const a=Math.atan2(Math.sqrt(12),2),b=Math.atan2(Math.sqrt(15),-1);return cis(a+(b-a)*t).map(v=>4*v)}],["x=−1",lin(C(-1,Math.sqrt(15)),C(-1,-Math.sqrt(15)))],["קשת תחתונה",t=>{const a=-Math.atan2(Math.sqrt(15),-1),b=-Math.atan2(Math.sqrt(12),2);return cis(a+(b-a)*t).map(v=>4*v)}]],
+  maps:[["z²",MAPS.z2.f],["1/(z+4)",z=>div(ONE,add(z,C(4)))]],probe:[1,1],
+  task:"ב־z² שים לב: הקו x=−1 נוחת <b>בתוך</b> התמונה (קיפול). זו הסיבה לפרק את D לחצי ימני ושמאלי."},
+ {id:"25B2",n:"2025 ב' ש'2 — חצי־רצועה",inside:z=>z[0]>0&&z[0]<1&&z[1]>0,box:[-0.5,1.5,-0.3,3],
+  pieces:[["ציר מדומה",ray(C(0),C(0,1),L)],["בסיס [0,1]",lin(C(0),C(1))],["x=1",ray(C(1),C(0,1),L)]],
+  maps:[["(z+1)/(z−1)",z=>div(add(z,ONE),sub(z,ONE))],["e^(iπz/2)",z=>cexp(mul(C(0,PI/2),z))]],probe:[0.5,0.8],
+  task:"הקוטב z=1 יושב בפינה של D. מה קורה לשני קטעי השפה שנוגעים בו?"},
+ {id:"25A1",n:"2025 א' ש'1 — עדשה ← רביע",inside:z=>abs(z)<1&&abs(sub(z,C(1,1)))<1,box:[-0.3,1.3,-0.3,1.3],
+  pieces:[["קשת של |z|=1",arcP(C(0),1,0,PI/2)],["קשת של |z−1−i|=1",arcP(C(1,1),1,PI,1.5*PI)]],
+  maps:[["(z−i)/(z−1)",z=>div(sub(z,I),sub(z,ONE))],["e^(−3πi/4)(z−i)/(z−1)+1",z=>add(mul(cis(-3*PI/4),div(sub(z,I),sub(z,ONE))),ONE)]],probe:[0.5,0.5],
+  task:"שתי נקודות החיתוך הולכות ל־0 ול־∞, ולכן שתי הקשתות הופכות לקרניים. הזווית ביניהן — 90°, כמו בעדשה."},
+ {id:"24B1",n:"2024 ב' ש'1 — מגזר π/12, z³ ומביוס",inside:z=>{const a=arg(z);return a>=0&&a<=PI/12},box:[-0.3,3,-0.5,1.5],
+  pieces:[["קרן arg=0",ray(C(0),C(1),L)],["קרן arg=π/12",ray(C(0),cis(PI/12),L)]],
+  maps:[["z³",MAPS.z3.f],["(z³−i)/(z³+i)",z=>{const s=cpow(z,3);return div(sub(s,I),add(s,I))}]],probe:[1,0.12],
+  task:"הקרן arg=π/4 (אחרי z³) לא עוברת בקוטב −i ולכן הופכת למעגל. דרך אילו שלוש נקודות?"},
+ {id:"24A1",n:"2024 א' ש'1 — פרוסה, 1/(2+z²)",inside:z=>abs(z)<=1&&Math.abs(z[1])<=z[0],box:[-0.3,1.2,-0.8,0.8],
+  pieces:[["קרן π/4",lin(C(0),cis(PI/4))],["קשת |z|=1",arcP(C(0),1,PI/4,-PI/4)],["קרן −π/4",lin(cis(-PI/4),C(0))]],
+  maps:[["z²",MAPS.z2.f],["1/(2+z²)",z=>div(ONE,add(C(2),mul(z,z)))]],probe:[0.5,0.1],
+  task:"שתי הקרניים הולכות לאותו מעגל |w−¼|=¼. למה? (כי z² שולח את שתיהן לקטע אחד על הציר המדומה.)"},
+ {id:"24A2",n:"2024 א' ש'2 — חצי־מישור ← עיגול",inside:z=>z[1]>=z[0]-1,box:[-3,3,-3,3],
+  pieces:[["הישר y=x−1",t=>add(C(1),sc(C(1,1),(t-0.5)*2*L*Math.abs(t-0.5)*2))]],maps:[["g",z=>div(sub(mul(C(1,-1),z),ONE),add(sub(mul(C(1,-1),z),ONE),C(0,2)))]],probe:[0,1],
+  task:"הנקודה 1 = g(∞) חסרה בתמונה. שים לב שהקצוות של הישר מתכנסים אליה משני הצדדים."},
+ {id:"23B2",n:"2023 ב' ש'2 — ז'וקובסקי 4z − 1/z",inside:z=>abs(z)>=0.5&&abs(z)<=1&&Math.abs(arg(z))<=PI/4,box:[-0.2,1.2,-0.9,0.9],
+  pieces:[["קשת r=1",arcP(C(0),1,-PI/4,PI/4)],["קרן π/4",lin(cis(PI/4),sc(cis(PI/4),0.5))],["קשת r=½",arcP(C(0),0.5,PI/4,-PI/4)],["קרן −π/4",lin(sc(cis(-PI/4),0.5),cis(-PI/4))]],
+  maps:[["4z − 1/z",z=>sub(sc(z,4),div(ONE,z))]],probe:[0.75,0.1],
+  task:"גרור את הנקודה לאורך הקשת r=½: היא נוחתת על הציר המדומה. שם 4r = 1/r."},
+ {id:"23A2",n:"2023 א' ש'2 — משולש, 1/z והשלמה לריבוע",inside:z=>{const x=z[0]-1,y=z[1]-1;return x>=0&&y<=1&&y>=x},box:[0.5,2.5,0.5,2.5],
+  pieces:[["y=x",lin(C(1,1),C(2,2))],["y=2",lin(C(2,2),C(1,2))],["x=1",lin(C(1,2),C(1,1))]],
+  maps:[["1/z",MAPS.inv.f],["z²−2(1+i)z",z=>sub(mul(z,z),mul(C(2,2),z))]],probe:[1.3,1.6],
+  task:"הצלע על y=x עוברת (בהמשכה) בראשית — לכן היא נשארת ישרה תחת 1/z."},
+ {id:"22B2",n:"2022 ב' ש'2 — סהר, 1/z²",inside:z=>abs(sub(z,ONE))<=1&&abs(z)>=1,box:[-0.3,2.3,-1.3,1.3],
+  pieces:[["קשת |z−1|=1",arcP(C(1),1,-2*PI/3,2*PI/3)],["קשת |z|=1",arcP(C(0),1,PI/3,-PI/3)]],
+  maps:[["1/z",MAPS.inv.f],["1/z²",MAPS.inv2.f]],probe:[1.5,0.1],task:"קודם 1/z (כיפה), ואז ריבוע: הישר Re=½ הופך לפרבולה u=¼−v²."},
+ {id:"22A2",n:"2022 א' ש'2 — sin z על מלבן",inside:z=>z[0]>=0&&z[0]<=PI/2&&z[1]>=0&&z[1]<=1,box:[-0.2,1.8,-0.3,1.3],
+  pieces:[["בסיס",lin(C(0),C(PI/2))],["x=π/2",lin(C(PI/2),C(PI/2,1))],["y=1",lin(C(PI/2,1),C(0,1))],["x=0",lin(C(0,1),C(0))]],
+  maps:[["sin z",MAPS.sin.f]],probe:[0.8,0.5],task:"הצלע העליונה y=1 הופכת לרבע אליפסה עם חצאי צירים cosh 1 ו־sinh 1."},
+ {id:"22A3",n:"2022 א' ש'3 — מישור חתוך ← עיגול",inside:z=>!(Math.abs(z[0]+z[1])<1e-9&&z[0]>=0),box:[-3,3,-3,3],
+  pieces:[["חתך (1−i)t — צד אחד",t=>add(sc(C(1,-1),L*t*t/1.4),sc(C(1,1),1e-6))],["חתך — צד שני",t=>add(sc(C(1,-1),L*t*t/1.4),sc(C(1,1),-1e-6))]],
+  maps:[["סיבוב ← √ ← מביוס",z=>{const s=csqrt(mul(cis(5*PI/4),z));return div(sub(s,ONE),add(s,ONE))}]],probe:[-1,1],task:"שני הצדדים של החתך הולכים לשני חצאי מעגל היחידה."},
+ {id:"21A2",n:"2021 א' ש'2 — מגזר ← עיגול |w−i|<2",inside:z=>z[0]>0&&Math.abs(z[1])<z[0],box:[-0.5,3,-2,2],
+  pieces:[["קרן π/4",ray(C(0),cis(PI/4),L)],["קרן −π/4",ray(C(0),cis(-PI/4),L)]],
+  maps:[["z²",MAPS.z2.f],["i + 2(z²−1)/(z²+1)",z=>{const s=mul(z,z);return add(I,sc(div(sub(s,ONE),add(s,ONE)),2))}]],probe:[1,0.2],task:"z=1 הולך למרכז i. כל שפת המגזר — למעגל ברדיוס 2."},
+ {id:"b-exp",n:"בסיס — רצועה 0<Im<π תחת eᶻ",inside:z=>z[1]>0&&z[1]<PI,box:[-3,3,-1,4],
+  pieces:[["y=0",t=>C(-8+16*t,0)],["y=π",t=>C(8-16*t,PI)]],maps:[["eᶻ",MAPS.exp.f]],probe:[0,1.5],task:"קווים אופקיים הופכים לקרניים; קווים אנכיים — למעגלים."},
+ {id:"b-mob",n:"בסיס — חצי־מישור עליון תחת (z−i)/(z+i)",inside:z=>z[1]>0,box:[-3,3,-1,4],
+  pieces:[["ציר ממשי",t=>C((t-0.5)*2*L*Math.abs(t-0.5)*2,0)]],maps:[["(z−i)/(z+i)",MAPS.mobUHP.f]],probe:[0,1],task:"i הולך ל־0, ∞ הולך ל־1, הציר הממשי — למעגל היחידה."},
+];
+const cz=new Plane(document.getElementById("cz")), cw=new Plane(document.getElementById("cw"));
+const selP=document.getElementById("mapPreset"), selF=document.getElementById("mapFn");
+P.forEach((p,i)=>selP.add(new Option(p.n,i)));
+let cur=P[0], fn=cur.maps[cur.maps.length-1][1], probe=cur.probe.slice(), wZoom=1, revealed=false, wBounds=null;
+function loadPreset(i){cur=P[i];selF.innerHTML="";cur.maps.forEach((m,k)=>selF.add(new Option(m[0],k)));selF.value=cur.maps.length-1;fn=cur.maps[selF.value][1];probe=cur.probe.slice();wZoom=1;revealed=false;
+  const b=cur.box;cz.set(b[0],b[1],b[2],b[3]);document.getElementById("mapTask").innerHTML="<b>משימה:</b> "+cur.task;computeW();drawMap();}
+function samplePiece(f,n=700){const a=[];for(let k=0;k<=n;k++)a.push(f(k/n));return a}
+let interior=[], interiorW=[];
+function computeW(){const b=cur.box;interior=[];const N=120;for(let i=0;i<=N;i++)for(let j=0;j<=N;j++){const z=[b[0]+(b[1]-b[0])*i/N,b[2]+(b[3]-b[2])*j/N];if(cur.inside(z))interior.push(z)}
+  interiorW=interior.map(fn);const pts=interiorW.concat(...cur.pieces.map(p=>samplePiece(p[1],200).map(fn))).filter(fin);
+  const xs=pts.map(p=>p[0]).sort((a,b)=>a-b),ys=pts.map(p=>p[1]).sort((a,b)=>a-b);const q=(a,f)=>a[Math.min(a.length-1,Math.max(0,Math.floor(f*(a.length-1))))];
+  let x0=q(xs,.02),x1=q(xs,.98),y0=q(ys,.02),y1=q(ys,.98);x0=Math.min(x0,0);x1=Math.max(x1,0);y0=Math.min(y0,0);y1=Math.max(y1,0);
+  const m=0.15*Math.max(x1-x0,y1-y0,0.2);wBounds=[x0-m,x1+m,y0-m,y1+m];applyWZoom();}
+function applyWZoom(){const b=wBounds,cx=(b[0]+b[1])/2,cy=(b[2]+b[3])/2,h=Math.max(b[1]-b[0],b[3]-b[2])/2/wZoom;cw.set(cx-h,cx+h,cy-h,cy+h)}
+function deriv(z){const h=1e-6;const a=fn(add(z,C(h))),b=fn(sub(z,C(h)));return sc(sub(a,b),1/(2*h))}
+function drawMap(){const grid=document.getElementById("mapGrid").checked, fill=document.getElementById("mapFill").checked;
+  cz.clear();cw.clear();
+  if(fill){cz.ctx.fillStyle=T.domfill;for(const z of interior){cz.ctx.fillRect(cz.X(z)-2*cz.d,cz.Y(z)-2*cz.d,4*cz.d,4*cz.d)}}
+  const hide=document.getElementById("guessMode").checked&&!revealed;document.getElementById("mapCover").hidden=!hide;
+  if(fill&&!hide){cw.ctx.fillStyle=T.imgfill;for(const w of interiorW){if(fin(w))cw.ctx.fillRect(cw.X(w)-1.5*cw.d,cw.Y(w)-1.5*cw.d,3*cw.d,3*cw.d)}}
+  if(grid){const b=cur.box,nl=12;for(let s=0;s<2;s++)for(let k=1;k<nl;k++){const seg=[];let run=[];
+      for(let t=0;t<=400;t++){const u=b[0]+(b[1]-b[0])*(s?k/nl:t/400),v=b[2]+(b[3]-b[2])*(s?t/400:k/nl);const z=[u,v];if(cur.inside(z))run.push(z);else if(run.length){seg.push(run);run=[]}}
+      if(run.length)seg.push(run);for(const r of seg){cz.path(r,T.axis,0.8);if(!hide)cw.path(r.map(fn),T.axis,0.8)}}}
+  const leg=[];cur.pieces.forEach((p,i)=>{const col=pieceColor(i);const pts=samplePiece(p[1]);cz.path(pts,col,2.6);cz.arrow(pts,col);if(!hide){const w=pts.map(fn);cw.path(w,col,2.6);cw.arrow(w,col)}leg.push(`<span style="color:${col}">${p[0]}</span>`)});
+  document.getElementById("mapLegend").innerHTML=leg.join("");
+  const w=fn(probe);cz.dot(probe,T.gold,6);if(!hide)cw.dot(w,T.gold,6);
+  const d=deriv(probe);const ins=cur.inside(probe);
+  document.getElementById("zBox").textContent="z = "+fc(probe,3);document.getElementById("wBox").textContent=hide?"":"w = "+fc(w,3);
+  const conf=abs(d)<1e-5?`<span class="bad">f′ = 0 — לא קונפורמית כאן (זוויות מוכפלות)</span>`:`<span class="good">f′ ≠ 0 — קונפורמית: סיבוב ב־${fmt(arg(d)*180/PI,1)}° ומתיחה פי ${fmt(abs(d),3)}</span>`;
+  document.getElementById("mapVals").innerHTML=`<tr><td>הנקודה</td><td class="v">z = ${fc(probe)}</td><td>${ins?'<span class="tag">בתוך D</span>':'<span class="tag">מחוץ ל־D</span>'}</td></tr>
+   <tr><td>התמונה</td><td class="v">${hide?"—":"f(z) = "+fc(w)}</td><td></td></tr>
+   <tr><td>הנגזרת</td><td class="v">${hide?"—":"f′(z) ≈ "+fc(d,3)}</td><td>${hide?"":conf}</td></tr>`;}
+selP.onchange=()=>loadPreset(+selP.value);
+selF.onchange=()=>{fn=cur.maps[+selF.value][1];wZoom=1;computeW();drawMap()};
+["mapGrid","mapFill"].forEach(id=>document.getElementById(id).onchange=drawMap);
+document.getElementById("mapZoomIn").onclick=()=>{wZoom*=1.6;applyWZoom();drawMap()};
+document.getElementById("mapZoomOut").onclick=()=>{wZoom/=1.6;applyWZoom();drawMap()};
+document.getElementById("mapFit").onclick=()=>{wZoom=1;applyWZoom();drawMap()};
+document.getElementById("mapReveal").onclick=()=>{revealed=true;drawMap()};
+function dragger(plane,onMove){let on=false;const cv=plane.cv;
+  const pos=e=>{const r=cv.getBoundingClientRect();return plane.from((e.clientX-r.left)*plane.d,(e.clientY-r.top)*plane.d)};
+  cv.addEventListener("pointerdown",e=>{on=true;cv.setPointerCapture(e.pointerId);onMove(pos(e))});
+  cv.addEventListener("pointermove",e=>{if(on)onMove(pos(e))});
+  cv.addEventListener("pointerup",()=>on=false);cv.addEventListener("pointercancel",()=>on=false);}
+dragger(cz,z=>{probe=z;drawMap()});
+
+/* ======================== MODULE 2 ======================== */
+function integ(f,path,dpath,n=3000){let s=C(0);for(let k=0;k<=n;k++){const t=k/n,w=(k===0||k===n)?1:(k%2?4:2);const z=path(t);s=add(s,sc(mul(f(z),dpath(t)),w))}return sc(s,1/(3*n))}
+const segPath=(a,b)=>[t=>add(a,sc(sub(b,a),t)),()=>sub(b,a)];
+const arcPath=(c,r,t0,t1)=>[t=>add(c,sc(cis(t0+(t1-t0)*t),r)),t=>sc(mul(I,cis(t0+(t1-t0)*t)),r*(t1-t0))];
+const ci=new Plane(document.getElementById("ci")), cs=new Plane(document.getElementById("cs"));
+let intRevealed=false;
+const TPL=[
+ {n:"טריגו — ∫ e^(ikt)/(a + sin t) (2024 א' ש'4, a=5/4)",
+  sl:[["a",1.05,3,1.25,0.01],["k",0,6,1,1]],
+  fnText:p=>`2z^${p.k}/(z²+2aiz−1)`,
+  task:p=>`<b>שאל את עצמך:</b> איזה משני השורשים בתוך מעגל היחידה? המכפלה שלהם היא −1, אז תמיד בדיוק אחד. הזז את a וראה שהפנימי מתקרב למעגל כש־a → 1.`,
+  run(p){const a=p.a,k=p.k,s=Math.sqrt(a*a-1);const z1=C(0,-a+s),z2=C(0,-a-s);
+    ci.set(-2.5,2.5,-3.5,1.5);ci.clear();ci.circle(C(0),1,T.c1,2.6);ci.cross(z1,T.pole,"z₁");ci.cross(z2,T.muted,"z₂");
+    const num=integ(t=>{const tt=t[0];return div(cis(k*tt),C(a+Math.sin(tt)))},t=>C(-PI+2*PI*t),()=>C(2*PI),4000);
+    const res=sc(cpow(z1,k),2*PI/s);
+    drawSpark(x=>{const ss=Math.sqrt(x*x-1);return abs(sc(cpow(C(0,-x+ss),k),2*PI/ss))},1.02,3,a,"|I_k| כפונקציה של a");
+    return [["השורש הפנימי z₁",fc(z1),abs(z1)<1?'<span class="good">|z₁|<1 ✓</span>':''],["השורש החיצוני z₂",fc(z2),"|z₁·z₂| = "+fmt(abs(mul(z1,z2)),3)],
+      ["I_k — אינטגרציה נומרית ישירה",fc(num),""],["I_k = 2π z₁ᵏ/√(a²−1)",fc(res),abs(sub(num,res))<1e-6?'<span class="good">תואם ✓</span>':'<span class="bad">לא תואם</span>'],
+      ["∫cos kt/(a+sin t) = Re",fmt(res[0]),""],["∫sin kt/(a+sin t) = Im",fmt(res[1]),"5 הנקודות של הסעיף האחרון"]]}},
+ {n:"מגזר — ∫₀^∞ x^(m−1)/(1+xⁿ) (2026 ב' ש'4: n=17, m=3)",
+  sl:[["n",3,20,17,1],["m",1,19,3,1],["R",1.05,5,1.6,0.01]],
+  fnText:p=>`z^${p.m-1}/(1+z^${p.n})`,
+  task:p=>`<b>שאל את עצמך:</b> למה רק קוטב אחד בתוך המגזר? הזז את R: האינטגרל על הקשת γ_R דועך, והיחס בין ∫β ל־∫α נשאר K בכל R.`,
+  run(p){const n=p.n,m=Math.min(p.m,n-1),R=p.R,th=2*PI/n;const f=z=>div(cpow(z,m-1),add(ONE,cpow(z,n)));
+    const zoom=Math.max(R*1.15,1.3);ci.set(-0.4*zoom,zoom,-0.4*zoom,zoom);ci.clear();
+    const [pa,da]=segPath(C(0),C(R)),[pg,dg]=arcPath(C(0),R,0,th),[pb,db]=segPath(C(0),sc(cis(th),R));
+    ci.path(samplePiece(pa),T.c1,2.6);ci.arrow(samplePiece(pa),T.c1);ci.path(samplePiece(pg),T.c2,2.6);ci.arrow(samplePiece(pg),T.c2);ci.path(samplePiece(t=>pb(1-t)),T.c3,2.6);ci.arrow(samplePiece(t=>pb(1-t)),T.c3);
+    for(let k=0;k<n;k++){const z=cis(PI*(2*k+1)/n);ci.cross(z,k===0?T.pole:T.muted,k===0?"e^(iπ/n)":"")}
+    const A=integ(f,pa,da),G=integ(f,pg,dg),B=integ(f,pb,db),K=cis(2*PI*m/n);const z0=cis(PI/n);const res=sc(cpow(z0,m),-1/n);
+    const closed=sub(add(A,G),B);const exact=PI/(n*Math.sin(m*PI/n));
+    drawSpark(x=>abs(integ(f,...arcPath(C(0),x,0,th),800)),1.05,5,R,"|∫ על γ_R| כפונקציה של R");
+    return [["∫ על α_R (הקטע)",fc(A),"→ I כש־R→∞"],["∫ על γ_R (הקשת)",fc(G),'<span class="good">→ 0 (ML)</span>'],["∫ על β_R (הקרן)",fc(B),""],
+      ["K·∫α עם K = e^(2πim/n)",fc(mul(K,A)),abs(sub(mul(K,A),B))<1e-6?'<span class="good">= ∫β ✓</span>':''],
+      ["∮ = α + γ − β",fc(closed),""],["2πi·Res(z₀) = −2πi z₀ᵐ/n",fc(sc(mul(I,res),2*PI)),abs(sub(closed,sc(mul(I,res),2*PI)))<1e-5?'<span class="good">תואם ✓</span>':''],
+      ["התוצאה π/(n sin(mπ/n))",fmt(exact,6),"∫α_R שואף לזה"]]}},
+ {n:"קוטב על הציר — e^(iz)/(z(z²+2z+5)) (2026 א' ש'3)",
+  sl:[["r",0.02,1,0.3,0.01],["R",2.4,30,4,0.1]],
+  fnText:()=>"e^(iz)/(z(z²+2z+5))",
+  task:()=>`<b>שאל את עצמך:</b> לאן שואף ∫ על חצי העיגול הקטן כש־r→0? (iπ·Res₀ = iπ/5.) ולמה הקשת הגדולה נעלמת?`,
+  run(p){const r=p.r,R=p.R;const f=z=>div(cexp(mul(I,z)),mul(z,add(add(mul(z,z),sc(z,2)),C(5))));
+    ci.set(-R*1.1,R*1.1,-0.35*R,1.2*R);ci.clear();
+    const seg1=segPath(C(-R),C(-r)),seg2=segPath(C(r),C(R)),big=arcPath(C(0),R,0,PI),small=arcPath(C(0),r,0,PI);
+    ci.path(samplePiece(seg1[0]),T.c1,2.6);ci.path(samplePiece(seg2[0]),T.c1,2.6);ci.arrow(samplePiece(seg2[0]),T.c1);
+    ci.path(samplePiece(big[0]),T.c2,2.6);ci.arrow(samplePiece(big[0]),T.c2);ci.path(samplePiece(t=>small[0](1-t)),T.c4,2.6);
+    ci.cross(C(0),T.gold,"0");ci.cross(C(-1,2),T.pole,"−1+2i");ci.cross(C(-1,-2),T.muted,"−1−2i");
+    const S1=integ(f,...seg1),S2=integ(f,...seg2),Bg=integ(f,...big),Sm=integ(f,...small,2000);
+    const z1=C(-1,2);const res=div(cexp(mul(I,z1)),mul(z1,C(0,4)));const tpi=sc(mul(I,res),2*PI);
+    const H=add(S1,S2);const exact=PI/5*(1-Math.exp(-2)*(Math.cos(1)-0.5*Math.sin(1)));
+    drawSpark(x=>abs(sub(integ(f,...arcPath(C(0),x,0,PI),800),C(0,PI/5))),0.02,1,r,"|∫ קשת קטנה − iπ/5| כפונקציה של r");
+    return [["∫ קשת קטנה β_r (נגד השעון)",fc(Sm),"→ iπ/5 = "+fc(C(0,PI/5))],["∫ קשת גדולה γ_R",fc(Bg),'<span class="good">→ 0 (ז\'ורדן)</span>'],
+      ["∫ על שני הקטעים H",fc(H),""],["H + γ − β  (מסילה סגורה)",fc(sub(add(H,Bg),Sm)),""],["2πi·Res(−1+2i)",fc(tpi),'<span class="good">שווה למסילה ✓</span>'],
+      ["Im H → ∫ sin t/(t(t²+2t+5))",fmt(H[1],5),"הגבול: "+fmt(exact,5)]]}},
+ {n:"קשת עליונה — ז'ורדן, ומתי הוא לא עובד",
+  sl:[["R",1.2,30,4,0.1],["פונקציה",0,2,0,1]],
+  fnText:p=>["x e^(3ix)/(1+x⁴)","e^(iz)/(1+z²)","cos z/(1+z²)"][p["פונקציה"]],
+  task:p=>p["פונקציה"]===2?`<b>שים לב:</b> עם cos z הקשת <b>לא</b> מתאפסת — היא שואפת ל־π sinh 1 ≈ 3.69 (2026 ב' רב־ברירה 7). cos מכיל e^(−iz), שגדל בחצי העליון.`:`<b>שאל את עצמך:</b> האם ML מספיק כאן, או שצריך ז'ורדן? השווה את שני החסמים בטבלה.`,
+  run(p){const R=p.R,ch=p["פונקציה"];const F=[z=>div(mul(z,cexp(mul(C(0,3),z))),add(ONE,cpow(z,4))),z=>div(cexp(mul(I,z)),add(ONE,mul(z,z))),z=>div(ccos(z),add(ONE,mul(z,z)))][ch];
+    ci.set(-R*1.1,R*1.1,-0.35*R,1.2*R);ci.clear();const seg=segPath(C(-R),C(R)),big=arcPath(C(0),R,0,PI);
+    ci.path(samplePiece(seg[0]),T.c1,2.6);ci.arrow(samplePiece(seg[0]),T.c1);ci.path(samplePiece(big[0]),T.c2,2.6);ci.arrow(samplePiece(big[0]),T.c2);
+    const poles=ch===0?[cis(PI/4),cis(3*PI/4),cis(-PI/4),cis(-3*PI/4)]:[I,sc(I,-1)];poles.forEach(z=>ci.cross(z,z[1]>0?T.pole:T.muted,""));
+    const G=integ(F,...big,4000),S=integ(F,...seg,4000);
+    let M=0;for(let k=0;k<=400;k++){const z=sc(cis(PI*k/400),R);M=Math.max(M,abs(F(z)))}
+    let Mg=0;const g=[z=>div(z,add(ONE,cpow(z,4))),z=>div(ONE,add(ONE,mul(z,z))),null][ch];if(g)for(let k=0;k<=400;k++){Mg=Math.max(Mg,abs(g(sc(cis(PI*k/400),R))))}
+    const a=[3,1,1][ch];const lim=[`iπ e^(−3/√2) sin(3/√2) ≈ ${fc(C(0,PI*Math.exp(-3/Math.SQRT2)*Math.sin(3/Math.SQRT2)))}`,`π/e ≈ ${fmt(PI/Math.E)}`,`π/e ≈ ${fmt(PI/Math.E)}`][ch];
+    drawSpark(x=>abs(integ(F,...arcPath(C(0),x,0,PI),900)),1.2,30,R,"|∫ על הקשת| כפונקציה של R");
+    const rows=[["∫ על הקשת γ_R",fc(G),ch===2?'<span class="bad">לא שואף ל־0!</span>':'<span class="good">→ 0</span>'],
+      ["חסם ML = max|f|·πR",fmt(M*PI*R),""]];
+    if(g)rows.push(["חסם ז'ורדן = (π/a)·max|g|",fmt(PI/a*Mg),"קטן יותר — וזה מה שמספיק"]);
+    rows.push(["∫ על הקטע [−R,R]",fc(S),"הגבול: "+lim]);return rows}},
+];
+const selT=document.getElementById("intPreset");TPL.forEach((t,i)=>selT.add(new Option(t.n,i)));
+let tpl=TPL[0],prm={};
+function buildSliders(){const box=document.getElementById("intSliders");box.innerHTML="";prm={};
+  tpl.sl.forEach(([name,mn,mx,val,st])=>{prm[name]=val;const id="s_"+name;const d=document.createElement("div");
+    const lbl=name==="פונקציה"?"פונקציה (0/1/2)":name;
+    d.innerHTML=`<label for="${id}">${lbl}: <span class="ltr" id="${id}v">${val}</span></label><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${val}">`;box.appendChild(d);
+    d.querySelector("input").oninput=e=>{prm[name]=+e.target.value;document.getElementById(id+"v").textContent=e.target.value;runInt()}})}
+function drawSpark(fx,x0,x1,xc,title){document.getElementById("sparkTitle").textContent=title;cs.size();const g=cs.ctx,W=cs.W,H=cs.H,d=cs.d;g.setTransform(1,0,0,1,0,0);g.fillStyle=T.panel;g.fillRect(0,0,W,H);
+  const N=70,xs=[],ys=[];for(let k=0;k<=N;k++){const x=x0+(x1-x0)*k/N;xs.push(x);ys.push(fx(x))}const ymax=Math.max(...ys.filter(isFinite))*1.1||1;
+  const pl=46*d,pr=12*d,pt=16*d,pb=30*d;const X=x=>pl+(x-x0)/(x1-x0)*(W-pl-pr),Y=y=>H-pb-(y/ymax)*(H-pt-pb);
+  g.strokeStyle=T.grid;g.lineWidth=d;g.beginPath();for(let k=0;k<=4;k++){const y=ymax*k/4;g.moveTo(pl,Y(y));g.lineTo(W-pr,Y(y))}g.stroke();
+  g.fillStyle=T.muted;g.font=`${11*d}px "IBM Plex Mono",monospace`;g.textAlign="right";g.textBaseline="middle";for(let k=0;k<=4;k++){const y=ymax*k/4;g.fillText(fmt(y,2),pl-5*d,Y(y))}
+  g.textAlign="center";g.textBaseline="top";for(let k=0;k<=4;k++){const x=x0+(x1-x0)*k/4;g.fillText(fmt(x,2),X(x),H-pb+6*d)}
+  g.beginPath();g.moveTo(X(xs[0]),Y(0));xs.forEach((x,i)=>g.lineTo(X(x),Y(ys[i])));g.lineTo(X(xs[N]),Y(0));g.closePath();g.fillStyle=T.imgfill;g.fill();
+  g.strokeStyle=T.img;g.lineWidth=2*d;g.beginPath();xs.forEach((x,i)=>i?g.lineTo(X(x),Y(ys[i])):g.moveTo(X(x),Y(ys[i])));g.stroke();
+  const yc=fx(xc);g.fillStyle=T.gold;g.beginPath();g.arc(X(xc),Y(yc),5*d,0,7);g.fill();}
+function runInt(){const rows=tpl.run(prm);document.getElementById("intFn").textContent="f = "+tpl.fnText(prm);document.getElementById("intTask").innerHTML=tpl.task(prm);
+  const hide=document.getElementById("guessMode").checked&&!intRevealed;document.getElementById("intReveal").hidden=!hide;
+  const tb=document.getElementById("intVals");tb.className="vals"+(hide?" hidden-val":"");
+  tb.innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="v">${r[1]}</td><td>${hide?"":r[2]}</td></tr>`).join("");
+  document.getElementById("intLegend").innerHTML=`<span style="color:${T.c1}">קטע ממשי</span><span style="color:${T.c2}">קשת גדולה</span><span style="color:${T.c3}">קרן (מגזר)</span><span style="color:${T.c4}">קשת קטנה</span><span style="color:${T.pole}">קוטב שנספר</span>`;}
+selT.onchange=()=>{tpl=TPL[+selT.value];intRevealed=false;buildSliders();runInt()};
+document.getElementById("intReveal").onclick=()=>{intRevealed=true;runInt()};
+
+/* ======================== MODULE 3 ======================== */
+const cl=new Plane(document.getElementById("cl"));
+const LAU=[
+ {n:"e^(1/z)/(4+z) — 2021 א' ש'5",f:z=>div(cexp(div(ONE,z)),add(C(4),z)),sing:[[C(0),"0 עיקרית"],[C(-4),"−4 קוטב"]],c0:C(0),task:"הזז את ρ מ־1.5 ל־7: c₋₁ קופץ מ־1−e^(−1/4) ל־1. ההפרש = שארית הקוטב ב־−4."},
+ {n:"cos(1/z)/(2−z) — 2023 א' ש'3",f:z=>div(ccos(div(ONE,z)),sub(C(2),z)),sing:[[C(0),"0 עיקרית"],[C(2),"2 קוטב"]],c0:C(0),task:"בטבעת הפנימית c₋₁ = cos½ − 1; בחיצונית c₋₁ = −1 ו־c₀ = 0."},
+ {n:"e^(1/(z−4))/z — 2024 א' ש'3 (סביב 4)",f:z=>div(cexp(div(ONE,sub(z,C(4)))),z),sing:[[C(4),"4 עיקרית"],[C(0),"0 קוטב"]],c0:C(4),task:"סביב z₀=4 בטבעת |z−4|>4: C₋₁=1, C₋₂=−3, C₀=0."},
+ {n:"e^(1/z)/(z²+4) — 2026 א' ש'4",f:z=>div(cexp(div(ONE,z)),add(mul(z,z),C(4))),sing:[[C(0),"0 עיקרית"],[C(0,2),"2i"],[C(0,-2),"−2i"]],c0:C(0),task:"בפנים c₋₁ = ½ sin ½ ≈ 0.2397; בחוץ c₋₁ = 0 כי f = O(1/z²)."},
+ {n:"sin(1/z)/(2−z)³ — 2025 ב' ש'3",f:z=>div(csin(div(ONE,z)),cpow(sub(C(2),z),3)),sing:[[C(0),"0 עיקרית"],[C(2),"2 קוטב 3"]],c0:C(0),task:"c₋₁ בפנים = cos½/8 − sin½/32 ≈ 0.0947; בחוץ 0."},
+ {n:"1/(1+e^(iz))² — 2022 ב' ש'5 (סביב −π)",f:z=>div(ONE,cpow(add(ONE,cexp(mul(I,z))),2)),sing:[-3,-2,-1,0,1,2].map(k=>[C(PI+2*PI*k),k===-1?"−π":""]),c0:C(-PI),task:"סביב −π: R = 2π (הסינגולריות הבאות ב־π ו־−3π). c₋₁ = Res = i."},
+ {n:"1/(1−e^(−2z))³ — 2025 א' ש'3",f:z=>div(ONE,cpow(sub(ONE,cexp(sc(z,-2))),3)),sing:[-3,-2,-1,0,1,2,3].map(k=>[C(0,PI*k),k?"":"0 קוטב 3"]),c0:C(0),task:"קוטב מסדר 3 ב־0; השארית ½. הקטבים הבאים ב־±πi."},
+];
+const selL=document.getElementById("lauPreset");LAU.forEach((p,i)=>selL.add(new Option(p.n,i)));
+let lau=LAU[0],z0=LAU[0].c0.slice(),lauRevealed=false;
+function rings(){return [...new Set(lau.sing.map(s=>+abs(sub(s[0],z0)).toFixed(6)))].sort((a,b)=>a-b)}
+function rhoMax(){const r=rings();return Math.max(1,(r[r.length-1]||1)*1.6)}
+function rhoVal(){return rhoMax()*(+document.getElementById("lauRho").value)/1000+1e-3}
+function runLau(){const rho=rhoVal();document.getElementById("lauRhoV").textContent=fmt(rho,3);document.getElementById("lauFn").textContent="z₀ = "+fc(z0,3);
+  document.getElementById("lauTask").innerHTML="<b>משימה:</b> "+lau.task;
+  const R=rings(),M=rhoMax();cl.set(z0[0]-M*1.05,z0[0]+M*1.05,z0[1]-M*0.7,z0[1]+M*0.7);cl.clear();
+  const bnd=[0,...R,Infinity];let inner=0,outer=Infinity;for(let i=0;i<bnd.length-1;i++)if(rho>bnd[i]&&rho<bnd[i+1]){inner=bnd[i];outer=bnd[i+1]}
+  const g=cl.ctx;g.fillStyle=T.domfill;g.beginPath();g.arc(cl.X(z0),cl.Y(z0),Math.min(outer,1e4)*cl.sc,0,7);if(inner>0)g.arc(cl.X(z0),cl.Y(z0),inner*cl.sc,0,7,true);g.fill("evenodd");
+  R.forEach(r=>cl.circle(z0,r,T.axis,1.2,[5,4]));
+  lau.sing.forEach(s=>cl.cross(s[0],T.pole,s[1]));cl.circle(z0,rho,T.img,2.6);cl.dot(z0,T.gold,6,"z₀");
+  const near=lau.sing.some(s=>Math.abs(abs(sub(s[0],z0))-rho)<rho*0.02+1e-3);
+  const n=2048,coef={};for(let m=-3;m<=2;m++)coef[m]=C(0);let oint=C(0);
+  for(let k=0;k<n;k++){const t=2*PI*k/n,e=cis(t),z=add(z0,sc(e,rho)),fz=lau.f(z);oint=add(oint,sc(mul(fz,mul(I,e)),rho*2*PI/n));
+    for(let m=-3;m<=2;m++)coef[m]=add(coef[m],sc(mul(fz,cis(-m*t)),Math.pow(rho,-m)/n))}
+  const inside=lau.sing.filter(s=>abs(sub(s[0],z0))<rho).map(s=>s[1]||fc(s[0],2));
+  document.getElementById("lauRing").innerHTML=`המסילה בטבעת <span class="ltr">${fmt(inner,3)} &lt; |z − z₀| &lt; ${outer===Infinity?"∞":fmt(outer,3)}</span> · מקיפה: ${inside.length?inside.join(", "):"כלום"}${near?' · <span class="bad">קרוב מדי לסינגולריות — המספרים לא אמינים</span>':""}`;
+  const hide=document.getElementById("guessMode").checked&&!lauRevealed;document.getElementById("lauReveal").hidden=!hide;
+  const tb=document.getElementById("lauVals");tb.className="vals"+(hide?" hidden-val":"");
+  const rows=[];for(let m=-3;m<=2;m++)rows.push([`c<sub>${m}</sub>`+(m===-1?" (השארית של הטבעת)":""),fc(coef[m],5)]);
+  rows.push(["∮ על |z − z₀| = ρ",fc(oint,5)]);rows.push(["2πi · c₋₁",fc(sc(mul(I,coef[-1]),2*PI),5)]);
+  tb.innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="v">${r[1]}</td></tr>`).join("");}
+selL.onchange=()=>{lau=LAU[+selL.value];z0=lau.c0.slice();lauRevealed=false;runLau()};
+document.getElementById("lauRho").oninput=runLau;
+document.getElementById("lauReveal").onclick=()=>{lauRevealed=true;runLau()};
+document.getElementById("lauCenter0").onclick=()=>{z0=C(0);runLau()};
+document.getElementById("lauCenterDef").onclick=()=>{z0=lau.c0.slice();runLau()};
+dragger(cl,z=>{z0=z;runLau()});
+
+/* ---------- tabs, guess mode, resize, theme ---------- */
+const TABS=[["tab-map","m-map"],["tab-int","m-int"],["tab-lau","m-lau"]];
+function show(id){TABS.forEach(([t,m])=>{const on=t===id;document.getElementById(t).setAttribute("aria-selected",on);document.getElementById(m).hidden=!on});redraw();
+  try{localStorage.setItem("lab-tab",id)}catch(e){}}
+TABS.forEach(([t])=>document.getElementById(t).onclick=()=>show(t));
+document.getElementById("guessMode").onchange=()=>{revealed=false;intRevealed=false;lauRevealed=false;redraw()};
+function redraw(){readTokens();if(!document.getElementById("m-map").hidden)drawMap();if(!document.getElementById("m-int").hidden)runInt();if(!document.getElementById("m-lau").hidden)runLau()}
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{applyWZoom();cz.set(...cur.box);redraw()},120)});
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",redraw);
+buildSliders();loadPreset(0);
+let startTab="tab-map";try{startTab=localStorage.getItem("lab-tab")||startTab}catch(e){}
+if(location.hash==="#int")startTab="tab-int";if(location.hash==="#laurent")startTab="tab-lau";
+show(startTab);
+</script>
+
+</html>
